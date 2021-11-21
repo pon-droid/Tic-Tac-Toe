@@ -34,7 +34,7 @@ void input(char board[B][B],char *play){
     board[y][x] = *play;
 }
 
-bool win(char board[B][B]){
+bool win(char board[B][B], char *play){
     //rows and columns
     for(int i = 0; i < B; i++){
         //rows
@@ -58,9 +58,32 @@ bool win(char board[B][B]){
     if(board[2][0] == board[1][1] && board[2][0] == board[0][2] && board[2][0] != 32){
         return true;
     }
+    std::cout << *play << " Has Won!" << std::endl;
+
 
     return false;
 }
+
+bool draw(char board[B][B]){
+
+    int draw = 0;
+
+    for(int i = 0; i < B; i++){
+        for(int j = 0; j < B; j++){
+            if(board[i][j] == 'X' || board[i][j] == 'O'){
+                draw++;
+            }
+    }
+    }
+    std::cout << draw << std::endl;
+    if(draw == 9){
+        std::cout << "DRAW" << std::endl;
+        return true;
+    }
+    return false;
+}
+
+
 
 int main()
 {
@@ -72,13 +95,12 @@ int main()
     while(true){
         print_board(board);
         input(board, &play);
-        if(win(board) == true){
+        if(win(board, &play) == true || draw(board) == true){
             print_board(board);
             break;
-        }
+        };
     }
 
-    std::cout << play << " Has Won!" << std::endl;
 
     return 0;
 }
