@@ -1,4 +1,5 @@
 #include <iostream>
+#include <math.h>
 #define B 3
 
 
@@ -24,42 +25,48 @@ void input(char board[B][B],char *play){
     std::cin >> x;
     std::cout << "Enter Row: " << std::endl;
     std::cin >> y;
-
+/*
     if(*play == 'O'){
         *play = 'X';
     } else{
         *play = 'O';
     }
-
-    board[y][x] = *play;
+*/
+    if(board[y][x] == 32){
+        board[y][x] = *play;
+    }else{
+        std::cout << "ILLEGAL MOVE" << std::endl;
+    }
 }
 
-bool win(char board[B][B], char *play){
+bool win(char board[B][B]){
     //rows and columns
     for(int i = 0; i < B; i++){
         //rows
 
         if(board[i][0] == board[i][1] && board[i][0] == board[i][2] && board[i][0] != 32){
+            std::cout << board[i][0] << " Has Won!" << std::endl;
             return true;
         }
 
         //Cols
 
         if(board[0][i] == board[1][i] && board[0][i] == board[2][i] && board[0][i] != 32){
+            std::cout << board[0][i] << " Has Won!" << std::endl;
             return true;
         }
 
     }
 
     if(board[0][0] == board[1][1] && board[0][0] == board[2][2] && board[0][0] != 32){
+        std::cout << board[0][0] << " Has Won!" << std::endl;
         return true;
     }
 
     if(board[2][0] == board[1][1] && board[2][0] == board[0][2] && board[2][0] != 32){
+        std::cout << board[2][0] << " Has Won!" << std::endl;
         return true;
     }
-    std::cout << *play << " Has Won!" << std::endl;
-
 
     return false;
 }
@@ -83,22 +90,38 @@ bool draw(char board[B][B]){
     return false;
 }
 
+void rand_ai(char board[B][B]){
+
+
+    while(true){
+        int r_x = rand() % 3;
+        int r_y = rand() % 3;
+        if(board[r_y][r_x] == 32){
+            board[r_y][r_x] = 'O';
+            break;
+        }
+    }
+}
 
 
 int main()
 {
     char board[B][B];
     board_init(board);
+    srand(time(NULL));
 
-
-    char play = 'O';
+    char play = 'X';
     while(true){
         print_board(board);
         input(board, &play);
-        if(win(board, &play) == true || draw(board) == true){
+        rand_ai(board);
+
+        if(win(board) == true || draw(board) == true){
             print_board(board);
             break;
         };
+
+
     }
 
 
