@@ -1,5 +1,6 @@
 #include <iostream>
 #include <math.h>
+#include <vector>
 #define B 3
 
 
@@ -189,26 +190,90 @@ void smart_ai2(char board[B][B]){
     }
 }
 
+struct pos{
+  int y;
+  int x;
+};
+
+void count_ai(char board[B][B]){
+    int ally = 0;
+    int empt = 0;
+    int enem = 0;
+    //Array of empty positions, cycle through and find one with adjacent allies
+    std::vector<pos> clr;
+    for(int y = 0; y < B; y++){
+        for(int x = 0; x < B; x++){
+            switch(board[y][x]){
+            case 'X':
+            ally++;
+            break;
+            case 'O':
+            enem++;
+            break;
+            default:
+            empt++;
+            clr.push_back({y,x});
+            break;
+            }
+        }
+    }
+    /*
+    for(int i = -2; i < 2; i++){
+        for(int j = 0; j < clr.size(); j++){
+            int nx = clr[j].x + i;
+            int ny = clr[j].y + i;
+            if(nx >=0 && nx <=2 && ny >=0 && ny <=2){
+                board[ny][nx] = '!';
+                std::cout << ny << " ++ " << nx << std::endl;
+            }
+        }
+    }
+    */
+    //GOING GOLD
+    int al2;
+    int px2, py2;
+    for(int i = 0; i < B; i++){
+        px2 = 0;
+        py2 = 0;
+        al2 = 0;
+        for(int j = 0; j < B; j++){
+            if(board[i][j] == 'X'){
+                al2++;
+            }
+            if(board[i][j] == 32){
+                py2 = i;
+                px2 = j;
+            }
+
+        }
+        std::cout << "AL " << al2 << std::endl;
+        if(al2 == 2){
+            std::cout << "op " << py2 << " opx " << px2 << std::endl;
+        }
+    }
+    std::cout << ally << " " << enem << " " << empt << " " << clr[1].x << clr[1].y << std::endl;
+}
+
 int main()
 {
-    char board[B][B] = {
+   char board[B][B] = {
         {'X','X',32},
         {'O','O',32},
         {'O','X','O'}
     };
-    /*
+/*
     char board[B][B] = {
         {'O','X',32},
         {32,'X',32},
         {'O',32,'O'}
     };
-    */
+*/
     //board_init(board);
     srand(time(NULL));
-
+    //USE AMOUNT OF FRIENDS AND RECORD FRIEND POSITIONS, FIND MISSING ONE IN ROW/COL PER ROW. ALL EMPTY SPOTS
     char play = 'X';
     print_board(board);
-    smart_ai2(board);
+    count_ai(board);
     print_board(board);
 /*
     while(true){
