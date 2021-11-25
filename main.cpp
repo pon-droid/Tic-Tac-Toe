@@ -104,226 +104,138 @@ void rand_ai(char board[B][B]){
     }
 }
 
+
 void smart_ai(char board[B][B]){
 
-/*
-    while(true){
-        int r_x = rand() % 3;
-        int r_y = rand() % 3;
-        if(board[r_y][r_x] == 32){
-            board[r_y][r_x] = 'X';
-            break;
-        }
-    }
-*/
-
-    for(int i = 0; i < B; i++){
-        //rows
-            if(board[i][0] == board[i][1] && board[i][2] == 32 && board[i][0] == 'X'){
-                board[i][2] = 'X';
-                std::cout << "SMART W" << i << " XX " << 2 << std::endl;
-                break;
-
-            }
-
-            //Cols
-
-            if(board[0][i] == board[1][i] && board[2][i] == 32 && board[0][i] == 'X'){
-                board[2][i] = 'X';
-                std::cout << "SMART V" << std::endl;
-
-                break;
-
-            }
-
-
-
-    }
-
-    if(board[0][0] == board[1][1] && board[0][0] == board[2][2] && board[0][0] != 32){
-        std::cout << board[0][0] << " Has Won!" << std::endl;
-
-    }
-
-    if(board[2][0] == board[1][1] && board[2][0] == board[0][2] && board[2][0] != 32){
-        std::cout << board[2][0] << " Has Won!" << std::endl;
-
-    }
-
-   /* while(true){
-        int r_x = rand() % 3;
-        int r_y = rand() % 3;
-        if(board[r_y][r_x] == 32){
-            board[r_y][r_x] = 'X';
-            break;
-        }
-    }*/
-
-}
-
-void smart_ai2(char board[B][B]){
-    int ai = 0;
-    int empty = 0;
-    int px,py;
-    for(int y = 0; y < B; y++){
-        for(int x = 0; x < B; x++){
-            if(board[y][x] == 'X'){
-                ai++;
-                std::cout << "FRIEND" << std::endl;
-            }
-            if(board[y][x] == 32){
-                empty++;
-                px = x;
-                py = y;
-                std::cout << "EMPTY" << std::endl;
-
-            }
-        }
-    }
-
-
-
-    if(board[py][px] == 32 && empty == 2){
-        board[py][px] = 'X';
-        std::cout << "SET" << std::endl;
-
-    }
-}
-
-struct pos{
-  int y;
-  int x;
-};
-
-void count_ai(char board[B][B]){
-    int ally = 0;
-    int empt = 0;
-    int enem = 0;
-    //Array of empty positions, cycle through and find one with adjacent allies
-    std::vector<pos> clr;
-    for(int y = 0; y < B; y++){
-        for(int x = 0; x < B; x++){
-            switch(board[y][x]){
-            case 'X':
-            ally++;
-            break;
-            case 'O':
-            enem++;
-            break;
-            default:
-            empt++;
-            clr.push_back({y,x});
-            break;
-            }
-        }
-    }
-    /*
-    for(int i = -2; i < 2; i++){
-        for(int j = 0; j < clr.size(); j++){
-            int nx = clr[j].x + i;
-            int ny = clr[j].y + i;
-            if(nx >=0 && nx <=2 && ny >=0 && ny <=2){
-                board[ny][nx] = '!';
-                std::cout << ny << " ++ " << nx << std::endl;
-            }
-        }
-    }
-    */
     //GOING GOLD
-    int al2;
-    int px2, py2;
-    /*
+    int ally;
+    int x, y;
+
     for(int i = 0; i < B; i++){
-        px2 = 0;
-        py2 = 0;
-        al2 = 0;
+        x = 0;
+        y = 0;
+        ally = 0;
         for(int j = 0; j < B; j++){
             if(board[i][j] == 'X'){
-                al2++;
+                ally++;
             }
             if(board[i][j] == 32){
-                py2 = i;
-                px2 = j;
+                y = i;
+                x = j;
             }
 
         }
-        std::cout << "AL " << al2 << std::endl;
-        if(al2 == 2){
-            board[py2][px2] = 'X';
+
+        if(ally == 2){
+            board[y][x] = 'X';
         }
     }
     for(int i = 0; i < B; i++){
-        al2 = 0;
-        px2 = 0;
-        py2 = 0;
+        ally = 0;
+        x = 0;
+        y = 0;
         for(int j = 0; j < B; j++){
             if(board[j][i] == 'X'){
-                al2++;
+                ally++;
             }
             if(board[j][i] == 32){
-                py2 = j;
-                px2 = i;
+                y = j;
+                x = i;
             }
         }
-        if(al2 == 2){
-            board[py2][px2] = 'X';
+        if(ally == 2){
+            board[y][x] = 'X';
         }
     }
-    */
+
+    ally = 0;
+    x = 0;
+    y = 0;
 
     //TODO: Find out a better way to do this
-    if(board[2][0] == 'X'){
-        al2++;
+    if(board[0][2] == 'X'){
+        ally++;
     }
     if(board[1][1] == 'X'){
-        al2++;
+        ally++;
     }
-    if(board[0][2] == 'X'){
-        al2++;
-    }
-    if(board[2][0] == 32){
-        py2 = 2;
-        px2 = 0;
-    }
-    if(board[1][1] == 32){
-        py2 = 1;
-        px2 = 1;
+    if(board[2][0] == 'X'){
+        ally++;
     }
     if(board[0][2] == 32){
-        py2 = 0;
-        px2 = 2;
-    }
-
-    if(al2 == 2){
-        board[py2][px2] = 'X';
-    }
-
-    al2 = 0;
-    px2 = 0;
-    py2 = 0;
-    if(board[0][0] == 'X'){
-        al2++;
-    }
-    if(board[1][1] == 'X'){
-        al2++;
-    }
-    if(board[2][2] == 'X'){
-        al2++;
-    }
-    if(board[0][0] == 32){
-        py2 = 2;
-        px2 = 0;
+        x = 0;
+        y = 2;
     }
     if(board[1][1] == 32){
-        py2 = 1;
-        px2 = 1;
+        y = 1;
+        x = 1;
+    }
+
+    if(board[0][2] == 32){
+        x = 0;
+        y = 2;
+    }
+
+    if(ally == 2){
+        board[x][y] = 'X';
+    }
+/*
+    ally = 0;
+    x = 0;
+    y = 0;
+    if(board[0][0] == 'X'){
+        ally++;
+    }
+    if(board[1][1] == 'X'){
+        ally++;
+    }
+    if(board[2][2] == 'X'){
+        ally++;
+    }
+    if(board[0][0] == 32){
+        y = 0;
+        x = 0;
+    }
+    if(board[1][1] == 32){
+        y = 1;
+        x = 1;
     }
     if(board[2][2] == 32){
-        py2 = 0;
-        px2 = 2;
+        y = 2;
+        x = 2;
     }
-    if(al2 == 2){
-        board[py2][px2] = 'X';
+    if(ally == 2){
+        board[y][x] = 'X';
+    }
+*/
+    ally = 0;
+    x = 0;
+    y = 0;
+
+    if(board[0][0] == 'X'){
+        ally++;
+    }
+    if(board[1][1] == 'X'){
+        ally++;
+    }
+    if(board[2][0] == 'X'){
+        ally++;
+    }
+    if(board[0][0] == 32){
+        x = 0;
+        y = 0;
+    }
+    if(board[1][1] == 32){
+        x = 0;
+        y = 0;
+    }
+    if(board[2][0] == 32){
+        x = 2;
+        y = 0;
+    }
+
+    if(ally == 2){
+        board[x][y] = 'X';
     }
 
 }
@@ -347,13 +259,13 @@ int main()
             {32,'X',32},
             {32,32,'O'}
         };
-
+    std::cout << board[0][2] << std::endl;
     //board_init(board);
     srand(time(NULL));
     //USE AMOUNT OF FRIENDS AND RECORD FRIEND POSITIONS, FIND MISSING ONE IN ROW/COL PER ROW. ALL EMPTY SPOTS
     char play = 'X';
     print_board(board);
-    count_ai(board);
+    smart_ai(board);
     print_board(board);
 /*
     while(true){
