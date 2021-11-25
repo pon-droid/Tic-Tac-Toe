@@ -111,7 +111,8 @@ void smart_ai(char board[B][B]){
     int ally;
     int x, y;
 
-    bool turn = false;
+
+    bool pos_c = false;
     for(int i = 0; i < B; i++){
         x = 0;
         y = 0;
@@ -123,16 +124,18 @@ void smart_ai(char board[B][B]){
             if(board[i][j] == 32){
                 y = i;
                 x = j;
+                pos_c = true;
             }
 
         }
 
-        if(ally == 2){
+        if(ally == 2 && pos_c == true){
             board[y][x] = 'X';
-            turn = true;
+            return;
 
         }
     }
+    pos_c = false;
     for(int i = 0; i < B; i++){
         ally = 0;
         x = 0;
@@ -144,15 +147,17 @@ void smart_ai(char board[B][B]){
             if(board[j][i] == 32){
                 y = j;
                 x = i;
+                pos_c = true;
+
             }
         }
-        if(ally == 2){
+        if(ally == 2 && pos_c == true){
             board[y][x] = 'X';
-            turn = true;
+            return;
 
         }
     }
-
+    pos_c = false;
     ally = 0;
     x = 0;
     y = 0;
@@ -175,23 +180,26 @@ void smart_ai(char board[B][B]){
     if(board[0][0] == 32){
         x = 0;
         y = 0;
+        pos_c = true;
     }
     if(board[1][1] == 32){
         y = 1;
         x = 1;
+        pos_c = true;
     }
 
     if(board[2][2] == 32){
         x = 2;
         y = 2;
+        pos_c = true;
     }
 
-    if(ally == 2){
+    if(ally == 2 && pos_c == true){
         std::cout << "BR SMART" << std::endl;
-        turn = true;
         board[x][y] = 'X';
+        return;
     }
-
+    pos_c = false;
     ally = 0;
     x = 0;
     y = 0;
@@ -212,37 +220,51 @@ void smart_ai(char board[B][B]){
     if(board[0][2] == 32){
         x = 0;
         y = 2;
+        pos_c = true;
+
     }
     if(board[1][1] == 32){
         x = 1;
         y = 1;
+        pos_c = true;
+
     }
     if(board[2][0] == 32){
         x = 2;
         y = 0;
+        pos_c = true;
+
     }
 
-    if(ally == 2){
+    if(ally == 2 && pos_c == true){
         std::cout << "BLC SMART" << std::endl;
-        board[x][y] = 'X';
-        turn = true;
-    }
+        std::cout << x << " || " << y << std::endl;
 
-    if(turn == false){
-        rand_ai(board);
+        board[x][y] = 'X';
+
         return;
     }
+
+    rand_ai(board);
 
 }
 
 int main()
 {
-    char board[B][B];
-    board_init(board);
+    char board[B][B] = {
+        {'O','O','X'},
+        {'O','O',32},
+        {'X','X',32}
+    };
+
+   // board_init(board);
     srand(time(NULL));
     //USE AMOUNT OF FRIENDS AND RECORD FRIEND POSITIONS, FIND MISSING ONE IN ROW/COL PER ROW. ALL EMPTY SPOTS
     char play = 'O';
     print_board(board);
+    smart_ai(board);
+    print_board(board);
+    /*
     while(true){
         input(board,&play);
         print_board(board);
@@ -259,7 +281,7 @@ int main()
 
 
     }
-
+*/
 
     return 0;
 }
