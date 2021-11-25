@@ -232,6 +232,7 @@ void count_ai(char board[B][B]){
     //GOING GOLD
     int al2;
     int px2, py2;
+    /*
     for(int i = 0; i < B; i++){
         px2 = 0;
         py2 = 0;
@@ -248,26 +249,105 @@ void count_ai(char board[B][B]){
         }
         std::cout << "AL " << al2 << std::endl;
         if(al2 == 2){
-            std::cout << "op " << py2 << " opx " << px2 << std::endl;
+            board[py2][px2] = 'X';
         }
     }
-    std::cout << ally << " " << enem << " " << empt << " " << clr[1].x << clr[1].y << std::endl;
+    for(int i = 0; i < B; i++){
+        al2 = 0;
+        px2 = 0;
+        py2 = 0;
+        for(int j = 0; j < B; j++){
+            if(board[j][i] == 'X'){
+                al2++;
+            }
+            if(board[j][i] == 32){
+                py2 = j;
+                px2 = i;
+            }
+        }
+        if(al2 == 2){
+            board[py2][px2] = 'X';
+        }
+    }
+    */
+
+    //TODO: Find out a better way to do this
+    if(board[2][0] == 'X'){
+        al2++;
+    }
+    if(board[1][1] == 'X'){
+        al2++;
+    }
+    if(board[0][2] == 'X'){
+        al2++;
+    }
+    if(board[2][0] == 32){
+        py2 = 2;
+        px2 = 0;
+    }
+    if(board[1][1] == 32){
+        py2 = 1;
+        px2 = 1;
+    }
+    if(board[0][2] == 32){
+        py2 = 0;
+        px2 = 2;
+    }
+
+    if(al2 == 2){
+        board[py2][px2] = 'X';
+    }
+
+    al2 = 0;
+    px2 = 0;
+    py2 = 0;
+    if(board[0][0] == 'X'){
+        al2++;
+    }
+    if(board[1][1] == 'X'){
+        al2++;
+    }
+    if(board[2][2] == 'X'){
+        al2++;
+    }
+    if(board[0][0] == 32){
+        py2 = 2;
+        px2 = 0;
+    }
+    if(board[1][1] == 32){
+        py2 = 1;
+        px2 = 1;
+    }
+    if(board[2][2] == 32){
+        py2 = 0;
+        px2 = 2;
+    }
+    if(al2 == 2){
+        board[py2][px2] = 'X';
+    }
+
 }
 
 int main()
 {
-   char board[B][B] = {
+/*   char board[B][B] = {
         {'X','X',32},
         {'O','O',32},
         {'O','X','O'}
-    };
-/*
-    char board[B][B] = {
+    };*/
+
+   /* char board[B][B] = {
         {'O','X',32},
         {32,'X',32},
         {'O',32,'O'}
-    };
-*/
+    };*/
+
+    char board[B][B] = {
+            {'O','O','X'},
+            {32,'X',32},
+            {32,32,'O'}
+        };
+
     //board_init(board);
     srand(time(NULL));
     //USE AMOUNT OF FRIENDS AND RECORD FRIEND POSITIONS, FIND MISSING ONE IN ROW/COL PER ROW. ALL EMPTY SPOTS
