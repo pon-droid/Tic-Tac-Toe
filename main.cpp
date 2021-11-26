@@ -421,12 +421,13 @@ void h_ai(char board[B][B], char *enem, char *ai){
 
         }
 
-        if(ally == 2 && pos_c == true){
+        if(ally == 2 && pos_c == true && board[y][x] == 32){
             board[y][x] = *ai;
             return;
 
         }
     }
+
     pos_c = false;
     for(int i = 0; i < B; i++){
         ally = 0;
@@ -443,12 +444,14 @@ void h_ai(char board[B][B], char *enem, char *ai){
 
             }
         }
-        if(ally == 2 && pos_c == true){
+        if(ally == 2 && pos_c == true && board[y][x] == 32){
             board[y][x] = *ai;
             return;
 
         }
     }
+
+
     pos_c = false;
     ally = 0;
     x = 0;
@@ -486,7 +489,7 @@ void h_ai(char board[B][B], char *enem, char *ai){
         pos_c = true;
     }
 
-    if(ally == 2 && pos_c == true){
+    if(ally == 2 && pos_c == true && board[x][y] == 32){
 
         board[x][y] = *ai;
         return;
@@ -528,7 +531,7 @@ void h_ai(char board[B][B], char *enem, char *ai){
 
     }
 
-    if(ally == 2 && pos_c == true){
+    if(ally == 2 && pos_c == true && board[x][y] == 32){
 
         board[x][y] = *ai;
 
@@ -538,9 +541,7 @@ void h_ai(char board[B][B], char *enem, char *ai){
 
     //BLOCK
     pos_c = false;
-    ally = 0;
-    x = 0;
-    y = 0;
+
 
 
     for(int i = 0; i < B; i++){
@@ -559,13 +560,14 @@ void h_ai(char board[B][B], char *enem, char *ai){
 
         }
 
-        if(ally == 2 && pos_c == true){
+        if(ally == 2 && pos_c == true && board[y][x] == 32){
             board[y][x] = *ai;
             return;
 
         }
     }
     pos_c = false;
+
     for(int i = 0; i < B; i++){
         ally = 0;
         x = 0;
@@ -581,7 +583,7 @@ void h_ai(char board[B][B], char *enem, char *ai){
 
             }
         }
-        if(ally == 2 && pos_c == true){
+        if(ally == 2 && pos_c == true && board[y][x] == 32){
             board[y][x] = *ai;
             return;
 
@@ -624,7 +626,7 @@ void h_ai(char board[B][B], char *enem, char *ai){
         pos_c = true;
     }
 
-    if(ally == 2 && pos_c == true){
+    if(ally == 2 && pos_c == true && board[x][y] == 32){
 
         board[x][y] = *ai;
         return;
@@ -645,6 +647,7 @@ void h_ai(char board[B][B], char *enem, char *ai){
         ally++;
     }
     if(board[2][0] == *enem){
+
         ally++;
     }
     if(board[0][2] == 32){
@@ -666,14 +669,13 @@ void h_ai(char board[B][B], char *enem, char *ai){
 
     }
 
-    if(ally == 2 && pos_c == true){
+    if(ally == 2 && pos_c == true && board[x][y] == 32){
 
         board[x][y] = *ai;
 
         return;
     }
-
-    rand_ai(board, enem);
+    rand_ai(board, ai);
 
 
     return;
@@ -682,34 +684,32 @@ void h_ai(char board[B][B], char *enem, char *ai){
 int main()
 {
     char board[B][B] = {
-        {'O','O','X'},
-        {'O','O',32},
-        {'X','X',32}
+        {'X','O',32},
+        {32,'O',32},
+        {'O','X',32}
     };
-
     //board_init(board);
     srand(time(NULL));
     //USE AMOUNT OF FRIENDS AND RECORD FRIEND POSITIONS, FIND MISSING ONE IN ROW/COL PER ROW. ALL EMPTY SPOTS
     char pl = 'O';
     char ai = 'X';
-    char ai_t = false;
+
 
     print_board(board);
-
-    h_ai(board,&pl, &ai);
-
+    h_ai(board,&pl,&ai);
+    //smart_ai(board,&ai,&pl);
     print_board(board);
-
 
 /*
+    print_board(board);
     while(true){
-        input(board,&play);
+        input(board,&pl);
         print_board(board);
         if(win(board) == true || draw(board) == true){
             print_board(board);
             break;
         };
-        fsmart_ai(board,&enem, &play);
+        h_ai(board,&pl, &ai);
         if(win(board) == true || draw(board) == true){
             print_board(board);
             break;
@@ -718,7 +718,7 @@ int main()
 
 
     }
-*/
 
+*/
     return 0;
 }
