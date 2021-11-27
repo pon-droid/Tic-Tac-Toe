@@ -463,30 +463,14 @@ void h_ai(char board[B][B], const char *enem, const char *ai){
       \
        \
        */
-    if(board[0][0] == *ai){
-        ally++;
-    }
-    if(board[1][1] == *ai){
-        ally++;
-    }
-    if(board[2][2] == *ai){
-        ally++;
-    }
-    if(board[0][0] == 32){
-        x = 0;
-        y = 0;
-        pos_c = true;
-    }
-    if(board[1][1] == 32){
-        y = 1;
-        x = 1;
-        pos_c = true;
-    }
-
-    if(board[2][2] == 32){
-        x = 2;
-        y = 2;
-        pos_c = true;
+    for(int i = 0; i < B; i++){
+        if(board[i][i] == *ai){
+            ally++;
+        } else {
+            x = i;
+            y = i;
+            pos_c = true;
+        }
     }
 
     if(ally == 2 && pos_c == true && board[x][y] == 32){
@@ -494,6 +478,7 @@ void h_ai(char board[B][B], const char *enem, const char *ai){
         board[x][y] = *ai;
         return;
     }
+
     pos_c = false;
     ally = 0;
     x = 0;
@@ -503,32 +488,17 @@ void h_ai(char board[B][B], const char *enem, const char *ai){
       /
      /
        */
-    if(board[0][2] == *ai){
-        ally++;
-    }
-    if(board[1][1] == *ai){
-        ally++;
-    }
-    if(board[2][0] == *ai){
-        ally++;
-    }
-    if(board[0][2] == 32){
-        x = 0;
-        y = 2;
-        pos_c = true;
 
-    }
-    if(board[1][1] == 32){
-        x = 1;
-        y = 1;
-        pos_c = true;
-
-    }
-    if(board[2][0] == 32){
-        x = 2;
-        y = 0;
-        pos_c = true;
-
+    for(int i = 0; i < B; i++){
+        for(int j = 2; j > 0; j--){
+            if(board[i][j] == *ai){
+                ally++;
+            } else {
+                x = i;
+                y = j;
+                pos_c = true;
+            }
+        }
     }
 
     if(ally == 2 && pos_c == true && board[x][y] == 32){
@@ -609,33 +579,7 @@ void h_ai(char board[B][B], const char *enem, const char *ai){
             pos_c = true;
         }
     }
-    /*
-    if(board[0][0] == *enem){
-        ally++;
-    }
-    if(board[1][1] == *enem){
-        ally++;
-    }
-    if(board[2][2] == *enem){
-        ally++;
-    }
-    if(board[0][0] == 32){
-        x = 0;
-        y = 0;
-        pos_c = true;
-    }
-    if(board[1][1] == 32){
-        y = 1;
-        x = 1;
-        pos_c = true;
-    }
 
-    if(board[2][2] == 32){
-        x = 2;
-        y = 2;
-        pos_c = true;
-    }
-*/
     if(ally == 2 && pos_c == true && board[x][y] == 32){
 
         board[x][y] = *ai;
@@ -650,33 +594,16 @@ void h_ai(char board[B][B], const char *enem, const char *ai){
       /
      /
        */
-    if(board[0][2] == *enem){
-        ally++;
-    }
-    if(board[1][1] == *enem){
-        ally++;
-    }
-    if(board[2][0] == *enem){
-
-        ally++;
-    }
-    if(board[0][2] == 32){
-        x = 0;
-        y = 2;
-        pos_c = true;
-
-    }
-    if(board[1][1] == 32){
-        x = 1;
-        y = 1;
-        pos_c = true;
-
-    }
-    if(board[2][0] == 32){
-        x = 2;
-        y = 0;
-        pos_c = true;
-
+    for(int i = 0; i < B; i++){
+        for(int j = 2; j > 0; j--){
+            if(board[i][j] == *enem){
+                ally++;
+            } else {
+                x = i;
+                y = j;
+                pos_c = true;
+            }
+        }
     }
 
     if(ally == 2 && pos_c == true && board[x][y] == 32){
@@ -690,6 +617,11 @@ void h_ai(char board[B][B], const char *enem, const char *ai){
 
     return;
 }
+
+struct pos {
+  int x;
+  int y;
+};
 
 int minimax_s(char board[B][B], const char *enem, const char *ai){
     //rows and columns
@@ -731,7 +663,30 @@ int minimax_s(char board[B][B], const char *enem, const char *ai){
             return -10;
         }
     }
+    if(draw(board) == true){
+        return 0;
+    }
+    char n_board[B][B];
+    std::vector<pos> pos;
 
+    for(int i = 0; i < B; i++){
+        for(int j = 0; j < B; j++){
+            //copy
+            n_board[i][j] = board[i][j];
+            //find holes
+            if(n_board[i][j] == 32){
+                pos.push_back({i,j});
+            }
+        }
+    }
+
+    std::vector<int> scores;
+
+    for(int i = 0; i < pos.size(); i++){
+        n_board[pos[i].x][pos[i].y] = *enem;
+        int score = minimax_s(n_board,enem,ai);
+        scores.push_back(score);
+    }
     return 0;
 }
 
@@ -739,28 +694,28 @@ int minimax_s(char board[B][B], const char *enem, const char *ai){
 int main()
 {
     char board[B][B] = {
-        {32,'X','O'},
-        {32,'O',32},
-        {32,'X','O'}
+        {'X','O','O'},
+        {32,'X',32},
+        {32,'X',32}
     };
-   // board_init(board);
+    //board_init(board);
     srand(time(NULL));
     //USE AMOUNT OF FRIENDS AND RECORD FRIEND POSITIONS, FIND MISSING ONE IN ROW/COL PER ROW. ALL EMPTY SPOTS
     char pl = 'O';
     char ai = 'X';
 
-
+/*
     print_board(board);
     //int score = minimax_s(board,&pl,&ai);
     h_ai(board,&pl,&ai);
     //smart_ai(board,&ai,&pl);
     print_board(board);
     //std::cout << "Score is: " << score << std::endl;
+*/
 
-/*
     print_board(board);
     while(true){
-        input(board,&pl);
+        //input(board,&pl);
         print_board(board);
         if(win(board) == true || draw(board) == true){
             print_board(board);
@@ -775,7 +730,7 @@ int main()
 
 
     }
-*/
+
 
     return 0;
 }
