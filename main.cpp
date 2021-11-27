@@ -91,14 +91,14 @@ bool draw(char board[B][B]){
     return false;
 }
 
-void rand_ai(char board[B][B], char *enem){
+void rand_ai(char board[B][B], const char *ai){
     std::cout << "RAND" << std::endl;
 
     while(true){
         int r_x = rand() % 3;
         int r_y = rand() % 3;
         if(board[r_y][r_x] == 32){
-            board[r_y][r_x] = *enem;
+            board[r_y][r_x] = *ai;
             break;
         }
     }
@@ -397,7 +397,7 @@ bool fsmart_ai(char board[B][B], char *enem, char *play){
 
 }
 
-void h_ai(char board[B][B], char *enem, char *ai){
+void h_ai(char board[B][B], const char *enem, const char *ai){
     int ally;
     int x, y;
 
@@ -681,14 +681,59 @@ void h_ai(char board[B][B], char *enem, char *ai){
     return;
 }
 
+int minimax_s(char board[B][B], const char *enem, const char *ai){
+    //rows and columns
+    for(int i = 0; i < B; i++){
+        //rows
+
+        if(board[i][0] == board[i][1] && board[i][0] == board[i][2] && board[i][0] != 32){
+            if(board[i][0] == *ai){
+                return 10;
+            } else {
+                return -10;
+            }
+        }
+
+        //Cols
+
+        if(board[0][i] == board[1][i] && board[0][i] == board[2][i] && board[0][i] != 32){
+            if(board[0][i] == *ai){
+                return 10;
+            } else {
+                return -10;
+            }
+        }
+
+    }
+
+    if(board[0][0] == board[1][1] && board[0][0] == board[2][2] && board[0][0] != 32){
+        if(board[0][0] == *ai){
+            return 10;
+        } else{
+            return -10;
+        }
+    }
+
+    if(board[2][0] == board[1][1] && board[2][0] == board[0][2] && board[2][0] != 32){
+        if(board[2][0] == *ai){
+            return 10;
+        } else{
+            return -10;
+        }
+    }
+
+    return 0;
+}
+
+
 int main()
 {
     char board[B][B] = {
-        {'X','O',32},
-        {32,'O',32},
-        {'O','X',32}
+        {'X','X','O'},
+        {32,'X',32},
+        {32,'X',32}
     };
-    //board_init(board);
+   // board_init(board);
     srand(time(NULL));
     //USE AMOUNT OF FRIENDS AND RECORD FRIEND POSITIONS, FIND MISSING ONE IN ROW/COL PER ROW. ALL EMPTY SPOTS
     char pl = 'O';
@@ -696,9 +741,11 @@ int main()
 
 
     print_board(board);
-    h_ai(board,&pl,&ai);
+    int score = minimax_s(board,&pl,&ai);
+    //h_ai(board,&pl,&ai);
     //smart_ai(board,&ai,&pl);
     print_board(board);
+    std::cout << "Score is: " << score << std::endl;
 
 /*
     print_board(board);
@@ -718,7 +765,7 @@ int main()
 
 
     }
-
 */
+
     return 0;
 }
