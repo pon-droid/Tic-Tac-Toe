@@ -600,6 +600,16 @@ void h_ai(char board[B][B], const char *enem, const char *ai){
       \
        \
        */
+    for(int i = 0; i < B; i++){
+        if(board[i][i] == *enem){
+            ally++;
+        } else {
+            x = i;
+            y = i;
+            pos_c = true;
+        }
+    }
+    /*
     if(board[0][0] == *enem){
         ally++;
     }
@@ -625,7 +635,7 @@ void h_ai(char board[B][B], const char *enem, const char *ai){
         y = 2;
         pos_c = true;
     }
-
+*/
     if(ally == 2 && pos_c == true && board[x][y] == 32){
 
         board[x][y] = *ai;
@@ -729,9 +739,9 @@ int minimax_s(char board[B][B], const char *enem, const char *ai){
 int main()
 {
     char board[B][B] = {
-        {'X','X','O'},
-        {32,'X',32},
-        {32,'X',32}
+        {32,'X','O'},
+        {32,'O',32},
+        {32,'X','O'}
     };
    // board_init(board);
     srand(time(NULL));
@@ -741,11 +751,11 @@ int main()
 
 
     print_board(board);
-    int score = minimax_s(board,&pl,&ai);
-    //h_ai(board,&pl,&ai);
+    //int score = minimax_s(board,&pl,&ai);
+    h_ai(board,&pl,&ai);
     //smart_ai(board,&ai,&pl);
     print_board(board);
-    std::cout << "Score is: " << score << std::endl;
+    //std::cout << "Score is: " << score << std::endl;
 
 /*
     print_board(board);
