@@ -86,7 +86,7 @@ bool draw(char board[B][B]){
     }
     std::cout << draw << std::endl;
     if(draw == 9){
-        std::cout << "DRAW" << std::endl;
+        //std::cout << "DRAW" << std::endl;
         return true;
     }
     return false;
@@ -624,11 +624,7 @@ struct pos {
   int y;
 };
 
-
-
-
-int minimax_s(char board[B][B], const char *enem, const char *ai){
-   //rows and columns
+int eval(char board[B][B],const char *enem, const char *ai){
     for(int i = 0; i < B; i++){
         //rows
 
@@ -667,12 +663,57 @@ int minimax_s(char board[B][B], const char *enem, const char *ai){
             return -10;
         }
     }
+
+    return 0;
+}
+
+
+
+int minimax_s(char board[B][B], const char *enem, const char *ai, bool a_max, int depth){
+
+    int terminus = eval(board,enem,ai);
+
+    if(terminus == 10){
+        return terminus;
+    }
+    if(terminus == -10){
+        return terminus;
+    }
     if(draw(board) == true){
         return 0;
     }
 
+    if(a_max){
+        int top = -1000;
 
-    char n_board[B][B];
+        for(int i = 0; i < B; i++){
+            for(int j = 0; j < B; j++){
+                if(board[i][j] == 32){
+                    board[i][j] = *ai;
+                    top = std::max( top, minimax_s(board, enem, ai, !a_max, depth + 1) );
+                    board[i][j] = 32;
+                }
+            }
+        }
+        return top;
+    }
+    else
+    {
+        int top = 1000;
+
+        for(int i = 0; i < B; i++){
+            for(int j = 0; j < B; j++){
+                if(board[i][j] == 32){
+                    board[i][j] = *enem;
+                    top = std::min(top,minimax_s(board,enem,ai,!a_max,depth + 1));
+                    board[i][j] = 32;
+                }
+            }
+        }
+
+        return top;
+    }
+  /*  char n_board[B][B];
     std::vector<pos> pos;
 
     for(int i = 0; i < B; i++){
@@ -706,85 +747,34 @@ int minimax_s(char board[B][B], const char *enem, const char *ai){
         std::cout << "Min " << *min_element(scores.begin(),scores.end()) << std::endl;
         return *min_element(scores.begin(),scores.end());
     }
+*/
 
-    return 0;
 }
 
-void minimax_ai(char board[B][B], const char *enem, const char *ai){
-    int best_s = 0;
-    int bx,by;
+pos minimax_ai(char board[B][B], const char *enem, const char *ai){
+    int top = -1000;
+    pos pos;
+    pos.x = -1;
+    pos.y = -1;
 
-    char n_board[B][B];
-    std::vector<pos> pos;
-    //Copy
     for(int i = 0; i < B; i++){
         for(int j = 0; j < B; j++){
-            n_board[i][j] = board[i][j];
-            if(n_board[i][j] == 32){
-                pos.push_back({i,j});
+            if(board[i][j] == 32){
+                board[i][j] = *ai;
+                int move = minimax_s(board,enem,ai,false,0);
+                board[i][j] = 32;
+
+                if(move > top){
+                    pos.x = i;
+                    pos.y = j;
+                    top = move;
+                }
             }
         }
     }
-
-
-    for(int i = 0; i < pos.size(); i++){
-        n_board[pos[i].x][pos[i].y] = *enem;
-
-        int score = minimax_s(n_board,enem,ai);
-        if(score > best_s){
-            best_s = score;
-            bx = pos[i].x;
-            by = pos[i].y;
-        }
-        n_board[pos[i].x][pos[i].y] = 32;
-    }
-
-    board[bx][by] = *ai;
+    return pos;
 }
 
-int test(char board[B][B],const char *enem, const char *ai){
-    for(int i = 0; i < B; i++){
-        //rows
-
-        if(board[i][0] == board[i][1] && board[i][0] == board[i][2] && board[i][0] != 32){
-            if(board[i][0] == *ai){
-                return 10;
-            } else {
-                return -10;
-            }
-        }
-
-        //Cols
-
-        if(board[0][i] == board[1][i] && board[0][i] == board[2][i] && board[0][i] != 32){
-            if(board[0][i] == *ai){
-                return 10;
-            } else {
-                return -10;
-            }
-        }
-
-    }
-
-    if(board[0][0] == board[1][1] && board[0][0] == board[2][2] && board[0][0] != 32){
-        if(board[0][0] == *ai){
-            return 10;
-        } else{
-            return -10;
-        }
-    }
-
-    if(board[2][0] == board[1][1] && board[2][0] == board[0][2] && board[2][0] != 32){
-        if(board[2][0] == *ai){
-            return 10;
-        } else{
-            return -10;
-        }
-    }
-    if(draw(board) == true){
-        return 0;
-    }
-}
 
 int main()
 {
@@ -795,31 +785,33 @@ int main()
     };*/
     char board[B][B] = {
             {32,'O','O'},
-            {32,'X',32},
+            {32,32,32},
             {32,32,32}};
-    //board_init(board);
-    srand(time(NULL));
+    board_init(board);
+    //srand(time(NULL));
     //USE AMOUNT OF FRIENDS AND RECORD FRIEND POSITIONS, FIND MISSING ONE IN ROW/COL PER ROW. ALL EMPTY SPOTS
     char pl = 'O';
     char ai = 'X';
 
-
-    print_board(board);
-    minimax_ai(board,&pl,&ai);
-  // std::cout << test(board,&pl,&ai) << std::endl;
-    print_board(board);
-
-
 /*
+    print_board(board);
+    pos best = minimax_ai(board,&pl,&ai);
+  // std::cout << test(board,&pl,&ai) << std::endl;
+    board[best.x][best.y] = ai;
+    print_board(board);
+
+*/
+
     print_board(board);
     while(true){
         input(board,&pl);
-        print_board(board);
+        //print_board(board);
         if(win(board) == true || draw(board) == true){
             print_board(board);
             break;
         };
-        minimax_ai(board,&pl, &ai);
+        pos best = minimax_ai(board,&pl,&ai);
+        board[best.x][best.y] = ai;
         if(win(board) == true || draw(board) == true){
             print_board(board);
             break;
@@ -828,7 +820,7 @@ int main()
 
 
     }
-*/
+
 
     return 0;
 }
