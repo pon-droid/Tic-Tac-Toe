@@ -1,6 +1,7 @@
 #include <iostream>
 #include <math.h>
 #include <vector>
+#include <algorithm>
 #define B 3
 
 
@@ -40,33 +41,33 @@ void input(char board[B][B],char *play){
     }
 }
 
-bool win(char board[B][B]){
+char win(char board[B][B]){
     //rows and columns
     for(int i = 0; i < B; i++){
         //rows
 
         if(board[i][0] == board[i][1] && board[i][0] == board[i][2] && board[i][0] != 32){
-            std::cout << board[i][0] << " Has Won!" << std::endl;
-            return true;
+            //std::cout << board[i][0] << " Has Won!" << std::endl;
+            return board[i][0];
         }
 
         //Cols
 
         if(board[0][i] == board[1][i] && board[0][i] == board[2][i] && board[0][i] != 32){
-            std::cout << board[0][i] << " Has Won!" << std::endl;
-            return true;
+           // std::cout << board[0][i] << " Has Won!" << std::endl;
+            return board[0][i];
         }
 
     }
 
     if(board[0][0] == board[1][1] && board[0][0] == board[2][2] && board[0][0] != 32){
-        std::cout << board[0][0] << " Has Won!" << std::endl;
-        return true;
+        //std::cout << board[0][0] << " Has Won!" << std::endl;
+        return board[0][0];
     }
 
     if(board[2][0] == board[1][1] && board[2][0] == board[0][2] && board[2][0] != 32){
-        std::cout << board[2][0] << " Has Won!" << std::endl;
-        return true;
+        //std::cout << board[2][0] << " Has Won!" << std::endl;
+        return board[2][0];
     }
 
     return false;
@@ -623,8 +624,11 @@ struct pos {
   int y;
 };
 
+
+
+
 int minimax_s(char board[B][B], const char *enem, const char *ai){
-    //rows and columns
+   //rows and columns
     for(int i = 0; i < B; i++){
         //rows
 
@@ -666,6 +670,8 @@ int minimax_s(char board[B][B], const char *enem, const char *ai){
     if(draw(board) == true){
         return 0;
     }
+
+
     char n_board[B][B];
     std::vector<pos> pos;
 
@@ -684,44 +690,136 @@ int minimax_s(char board[B][B], const char *enem, const char *ai){
 
     for(int i = 0; i < pos.size(); i++){
         n_board[pos[i].x][pos[i].y] = *enem;
-        int score = minimax_s(n_board,enem,ai);
+        int score = minimax_s(n_board,ai,enem);
+        n_board[pos[i].x][pos[i].y] = 32;
         scores.push_back(score);
     }
+
+    if(*ai == 'X'){
+        std::cout << "Max " << *max_element(scores.begin(),scores.end()) << std::endl;
+
+        return *max_element(scores.begin(),scores.end());
+
+
+    }
+    if(*ai == 'O'){
+        std::cout << "Min " << *min_element(scores.begin(),scores.end()) << std::endl;
+        return *min_element(scores.begin(),scores.end());
+    }
+
     return 0;
 }
 
+void minimax_ai(char board[B][B], const char *enem, const char *ai){
+    int best_s = 0;
+    int bx,by;
+
+    char n_board[B][B];
+    std::vector<pos> pos;
+    //Copy
+    for(int i = 0; i < B; i++){
+        for(int j = 0; j < B; j++){
+            n_board[i][j] = board[i][j];
+            if(n_board[i][j] == 32){
+                pos.push_back({i,j});
+            }
+        }
+    }
+
+
+    for(int i = 0; i < pos.size(); i++){
+        n_board[pos[i].x][pos[i].y] = *enem;
+
+        int score = minimax_s(n_board,enem,ai);
+        if(score > best_s){
+            best_s = score;
+            bx = pos[i].x;
+            by = pos[i].y;
+        }
+        n_board[pos[i].x][pos[i].y] = 32;
+    }
+
+    board[bx][by] = *ai;
+}
+
+int test(char board[B][B],const char *enem, const char *ai){
+    for(int i = 0; i < B; i++){
+        //rows
+
+        if(board[i][0] == board[i][1] && board[i][0] == board[i][2] && board[i][0] != 32){
+            if(board[i][0] == *ai){
+                return 10;
+            } else {
+                return -10;
+            }
+        }
+
+        //Cols
+
+        if(board[0][i] == board[1][i] && board[0][i] == board[2][i] && board[0][i] != 32){
+            if(board[0][i] == *ai){
+                return 10;
+            } else {
+                return -10;
+            }
+        }
+
+    }
+
+    if(board[0][0] == board[1][1] && board[0][0] == board[2][2] && board[0][0] != 32){
+        if(board[0][0] == *ai){
+            return 10;
+        } else{
+            return -10;
+        }
+    }
+
+    if(board[2][0] == board[1][1] && board[2][0] == board[0][2] && board[2][0] != 32){
+        if(board[2][0] == *ai){
+            return 10;
+        } else{
+            return -10;
+        }
+    }
+    if(draw(board) == true){
+        return 0;
+    }
+}
 
 int main()
 {
-    char board[B][B] = {
+   /* char board[B][B] = {
         {'X','O','O'},
         {32,'X',32},
-        {32,'X',32}
-    };
+        {32,32,32}
+    };*/
+    char board[B][B] = {
+            {32,'O','O'},
+            {32,'X',32},
+            {32,32,32}};
     //board_init(board);
     srand(time(NULL));
     //USE AMOUNT OF FRIENDS AND RECORD FRIEND POSITIONS, FIND MISSING ONE IN ROW/COL PER ROW. ALL EMPTY SPOTS
     char pl = 'O';
     char ai = 'X';
 
-/*
-    print_board(board);
-    //int score = minimax_s(board,&pl,&ai);
-    h_ai(board,&pl,&ai);
-    //smart_ai(board,&ai,&pl);
-    print_board(board);
-    //std::cout << "Score is: " << score << std::endl;
-*/
 
     print_board(board);
+    minimax_ai(board,&pl,&ai);
+  // std::cout << test(board,&pl,&ai) << std::endl;
+    print_board(board);
+
+
+/*
+    print_board(board);
     while(true){
-        //input(board,&pl);
+        input(board,&pl);
         print_board(board);
         if(win(board) == true || draw(board) == true){
             print_board(board);
             break;
         };
-        h_ai(board,&pl, &ai);
+        minimax_ai(board,&pl, &ai);
         if(win(board) == true || draw(board) == true){
             print_board(board);
             break;
@@ -730,7 +828,7 @@ int main()
 
 
     }
-
+*/
 
     return 0;
 }
